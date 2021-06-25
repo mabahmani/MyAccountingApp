@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+    <item
+        android:id="@+id/dateFilter"
+        android:contentDescription="@string/filterbydata"
+        android:title="@string/filter"
+        android:icon="@drawable/ic_baseline_date_range_24"
+        app:iconTint="@color/black"
+        app:showAsAction="ifRoom"
+        />
+
+    <item
+        android:id="@+id/categoryFilter"
+        android:contentDescription="@string/filter_category"
+        android:title="@string/filter_category"
+        android:icon="@drawable/ic_baseline_category_24"
+        app:iconTint="@color/black"
+        app:showAsAction="ifRoom"
+        />
+</menu>

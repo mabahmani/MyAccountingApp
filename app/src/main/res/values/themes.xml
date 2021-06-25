@@ -2,15 +2,48 @@
     <!-- Base application theme. -->
     <style name="Theme.MyAccounting" parent="Theme.MaterialComponents.DayNight.NoActionBar">
         <!-- Primary brand color. -->
-        <item name="colorPrimary">@color/purple_500</item>
-        <item name="colorPrimaryVariant">@color/purple_700</item>
-        <item name="colorOnPrimary">@color/white</item>
+        <item name="colorPrimary">@color/black</item>
+        <item name="colorPrimaryVariant">@color/black</item>
+        <item name="colorOnPrimary">@color/black</item>
         <!-- Secondary brand color. -->
-        <item name="colorSecondary">@color/teal_200</item>
+        <item name="colorSecondary">@color/black</item>
         <item name="colorSecondaryVariant">@color/teal_700</item>
-        <item name="colorOnSecondary">@color/black</item>
+        <item name="colorOnSecondary">@color/white</item>
         <!-- Status bar color. -->
         <item name="android:statusBarColor" tools:targetApi="l">?attr/colorPrimaryVariant</item>
         <!-- Customize your theme here. -->
+    </style>
+
+    <style name="ThemeDatePicker" parent="ThemeOverlay.MaterialComponents.MaterialCalendar">
+        <item name="materialCalendarStyle">@style/ThemeDatePickerCalendarStyle</item>
+        <item name="materialCalendarHeaderSelection">@style/ThemeDatePickerHeaderSelection</item>
+        <item name="materialCalendarHeaderTitle">@style/ThemeDatePickerHeaderTitle</item>
+        <item name="materialCalendarHeaderToggleButton">@style/ThemeDatePickerHeaderToggleButton</item>
+<!--        <item name="materialCalendarHeaderLayout">@style/ThemeDatePickerHeaderLayout</item>-->
+    </style>
+
+    <style name="ThemeDatePickerHeaderSelection" parent="Widget.MaterialComponents.MaterialCalendar.HeaderSelection">
+        <item name="android:textColor">@color/white</item>
+    </style>
+    <style name="ThemeDatePickerHeaderTitle" parent="Widget.MaterialComponents.MaterialCalendar.HeaderTitle">
+        <item name="android:textColor">@color/white</item>
+    </style>
+    <style name="ThemeDatePickerHeaderToggleButton" parent="Widget.MaterialComponents.MaterialCalendar.HeaderToggleButton">
+        <item name="android:tint">@color/white</item>
+    </style>
+    <style name="ThemeDatePickerHeaderLayout" parent="Widget.MaterialComponents.MaterialCalendar.HeaderLayout">
+        <item name="android:background">@color/white</item>
+    </style>
+    <style name="ThemeDatePickerCalendarStyle" parent="@style/Widget.MaterialComponents.MaterialCalendar">
+        <item name="daySelectedStyle">@style/ThemeDatePickerDaySelectedStyle</item>
+        <item name="yearSelectedStyle">@style/ThemeDatePickerYearSelectedStyle</item>
+    </style>
+    <style name="ThemeDatePickerDaySelectedStyle" parent="@style/Widget.MaterialComponents.MaterialCalendar.Day.Selected">
+        <item name="itemFillColor">?attr/colorPrimary</item>
+        <item name="itemTextColor">@color/white</item>
+    </style>
+    <style name="ThemeDatePickerYearSelectedStyle" parent="@style/Widget.MaterialComponents.MaterialCalendar.Year.Selected">
+        <item name="itemFillColor">?attr/colorPrimary</item>
+        <item name="itemTextColor">@color/white</item>
     </style>
 </resources>

@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+
+    <data>
+
+    </data>
+
+    <RelativeLayout
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:padding="6dp"
+        >
+
+        <androidx.cardview.widget.CardView
+            android:id="@+id/parent"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            app:cardCornerRadius="4dp"
+            app:cardBackgroundColor="@color/blue_grey_50"
+            app:cardPreventCornerOverlap="true"
+            app:cardElevation="0dp"
+            >
+
+            <androidx.appcompat.widget.AppCompatTextView
+                android:id="@+id/category"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:paddingLeft="6dp"
+                android:paddingRight="6dp"
+                android:paddingTop="4dp"
+                android:paddingBottom="4dp"
+                android:textSize="12sp"
+                android:textStyle="bold"
+                android:textColor="@color/black" />
+        </androidx.cardview.widget.CardView>
+
+    </RelativeLayout>
+
+</layout>

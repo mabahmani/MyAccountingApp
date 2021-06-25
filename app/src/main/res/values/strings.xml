@@ -1,3 +1,24 @@
 <resources>
     <string name="app_name">MyAccounting</string>
+    <string name="filter">Filter</string>
+    <string name="filterbydata">FilterByData</string>
+    <string name="debt">Debt</string>
+    <string name="credit">Credit</string>
+    <string name="filter_category">Filter Category</string>
+    <string name="description">Description</string>
+    <string name="cost">Cost</string>
+    <string name="date">Date</string>
+    <string name="category">Category</string>
+    <string name="add">Add +</string>
+    <string name="description_is_required_msg">Description is required</string>
+    <string name="cost_is_required_msg">Cost is required</string>
+    <string name="date_is_required_msg">Date is required</string>
+    <string name="pass">Pass</string>
+    <string name="total">Total</string>
+    <string name="no_debts">No Debts :)</string>
+    <string name="no_credits">No Credits :(</string>
+    <string name="restore">restore</string>
+    <string name="update">update</string>
+    <string name="cancel">Cancel</string>
+    <string name="ok">OK</string>
 </resources>
