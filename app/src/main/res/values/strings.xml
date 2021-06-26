@@ -21,4 +21,5 @@
     <string name="update">update</string>
     <string name="cancel">Cancel</string>
     <string name="ok">OK</string>
+    <string name="confirm_delete_msg">Are you sure you want to delete?</string>
 </resources>

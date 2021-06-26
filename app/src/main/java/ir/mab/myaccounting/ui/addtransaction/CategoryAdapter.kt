@@ -1,5 +1,6 @@
 package ir.mab.myaccounting.ui.addtransaction
 
+import android.view.HapticFeedbackConstants
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -29,6 +30,7 @@ class CategoryAdapter(
         }
 
         holder.binding.parent.setOnLongClickListener {
+            it.performHapticFeedback(HapticFeedbackConstants.LONG_PRESS)
             categoryItemClickListener.onLongClick(list[position])
             true
         }

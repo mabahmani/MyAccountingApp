@@ -53,6 +53,9 @@
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintTop_toBottomOf="@+id/totalTitle"
                 android:layout_marginTop="16dp"
+                android:paddingBottom="100dp"
+                android:clipToPadding="false"
+                android:overScrollMode="never"
                 />
 
             <androidx.appcompat.widget.AppCompatTextView
@@ -64,6 +67,7 @@
                 android:text="@string/no_credits"
                 android:gravity="center_horizontal"
                 android:layout_marginTop="16dp"
+                android:visibility="gone"
                 />
         </androidx.constraintlayout.widget.ConstraintLayout>
 

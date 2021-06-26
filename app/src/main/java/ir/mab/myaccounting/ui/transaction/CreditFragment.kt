@@ -8,6 +8,8 @@ import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
 import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.LinearLayoutManager
+import com.google.android.material.dialog.MaterialAlertDialogBuilder
+import ir.mab.myaccounting.R
 import ir.mab.myaccounting.databinding.FragmentCreditBinding
 import ir.mab.myaccounting.entity.TransactionWithCategories
 import ir.mab.myaccounting.listener.TransactionItemClickListener
@@ -18,7 +20,7 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import java.text.NumberFormat
 
-class CreditFragment: Fragment(), TransactionItemClickListener {
+class CreditFragment : Fragment(), TransactionItemClickListener {
     lateinit var binding: FragmentCreditBinding
     private val transactionViewModel by activityViewModels<TransactionViewModel>()
     lateinit var transactionAdapter: TransactionAdapter
@@ -51,7 +53,7 @@ class CreditFragment: Fragment(), TransactionItemClickListener {
 
     private fun checkFilter() {
         MainActivity.filter.observe(viewLifecycleOwner, {
-            if (it){
+            if (it) {
                 if (MainActivity.dateFilter && !MainActivity.categoryFilter) {
                     filterByDate()
                 } else if (!MainActivity.dateFilter && MainActivity.categoryFilter) {
@@ -61,9 +63,7 @@ class CreditFragment: Fragment(), TransactionItemClickListener {
                 } else {
                     getCredits()
                 }
-            }
-
-            else{
+            } else {
                 getCredits()
             }
         })
@@ -72,7 +72,39 @@ class CreditFragment: Fragment(), TransactionItemClickListener {
     private fun filterByDateAndCategory() {
         transactionViewModel.getCreditsByDateRange(MainActivity.startDate, MainActivity.endDate)
             .observe(viewLifecycleOwner, {
-                viewLifecycleOwner.lifecycleScope.launch(Dispatchers.Default){
+                if (MainActivity.dateFilter && MainActivity.categoryFilter) {
+                    viewLifecycleOwner.lifecycleScope.launch(Dispatchers.Default) {
+                        val filteredTransaction: ArrayList<TransactionWithCategories> =
+                            arrayListOf()
+                        for (sc in MainActivity.filterCategoryList) {
+                            for (tc in it) {
+                                for (cat in tc.categories) {
+                                    if (cat.category.contentEquals(sc.toString())) {
+                                        if (!filteredTransaction.contains(tc)) {
+                                            filteredTransaction.add(tc)
+                                            break
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                        requireActivity().runOnUiThread {
+                            checkEmpty(filteredTransaction)
+                            transactionAdapter.updateTransactions(filteredTransaction)
+//                            transactionAdapter.list = filteredTransaction
+//                            transactionAdapter.notifyDataSetChanged()
+                        }
+                    }
+                }
+
+            })
+    }
+
+    private fun filterByCategory() {
+
+        transactionViewModel.getCredits().observe(viewLifecycleOwner, {
+            if (MainActivity.categoryFilter) {
+                viewLifecycleOwner.lifecycleScope.launch(Dispatchers.Default) {
                     val filteredTransaction: ArrayList<TransactionWithCategories> = arrayListOf()
                     for (sc in MainActivity.filterCategoryList) {
                         for (tc in it) {
@@ -88,35 +120,12 @@ class CreditFragment: Fragment(), TransactionItemClickListener {
                     }
                     requireActivity().runOnUiThread {
                         checkEmpty(filteredTransaction)
-                        transactionAdapter.list = filteredTransaction
-                        transactionAdapter.notifyDataSetChanged()
+                        transactionAdapter.updateTransactions(filteredTransaction)
+//                        transactionAdapter.list = filteredTransaction
+//                        transactionAdapter.notifyDataSetChanged()
                     }
                 }
-            })
-    }
 
-    private fun filterByCategory() {
-
-        transactionViewModel.getCredits().observe(viewLifecycleOwner, {
-            viewLifecycleOwner.lifecycleScope.launch(Dispatchers.Default){
-                val filteredTransaction: ArrayList<TransactionWithCategories> = arrayListOf()
-                for (sc in MainActivity.filterCategoryList) {
-                    for (tc in it) {
-                        for (cat in tc.categories) {
-                            if (cat.category.contentEquals(sc.toString())) {
-                                if (!filteredTransaction.contains(tc)) {
-                                    filteredTransaction.add(tc)
-                                    break
-                                }
-                            }
-                        }
-                    }
-                }
-                requireActivity().runOnUiThread {
-                    checkEmpty(filteredTransaction)
-                    transactionAdapter.list = filteredTransaction
-                    transactionAdapter.notifyDataSetChanged()
-                }
             }
         })
     }
@@ -124,9 +133,13 @@ class CreditFragment: Fragment(), TransactionItemClickListener {
     private fun filterByDate() {
         transactionViewModel.getCreditsByDateRange(MainActivity.startDate, MainActivity.endDate)
             .observe(viewLifecycleOwner, {
-                checkEmpty(it)
-                transactionAdapter.list = it
-                transactionAdapter.notifyDataSetChanged()
+                if (MainActivity.dateFilter) {
+                    checkEmpty(it)
+                    transactionAdapter.updateTransactions(it.toMutableList())
+//                    transactionAdapter.list = it
+//                    transactionAdapter.notifyDataSetChanged()
+                }
+
             })
     }
 
@@ -143,8 +156,9 @@ class CreditFragment: Fragment(), TransactionItemClickListener {
     private fun getCredits() {
         transactionViewModel.getCredits().observe(viewLifecycleOwner, {
             checkEmpty(it)
-            transactionAdapter.list = it
-            transactionAdapter.notifyDataSetChanged()
+            transactionAdapter.updateTransactions(it.toMutableList())
+//            transactionAdapter.list = it
+//            transactionAdapter.notifyDataSetChanged()
             binding.swipeRefresh.isRefreshing = false
         })
     }
@@ -178,7 +192,17 @@ class CreditFragment: Fragment(), TransactionItemClickListener {
     }
 
     override fun onLongClick(model: TransactionWithCategories) {
-        transactionViewModel.deleteTransaction(model.transaction)
+        MaterialAlertDialogBuilder(requireContext())
+            .setTitle(getString(R.string.confirm_delete_msg))
+            .setNeutralButton(getString(R.string.cancel)) { _, _ -> }
+            .setPositiveButton(getString(R.string.ok)) { _, _ ->
+                run {
+                    transactionViewModel.deleteTransaction(
+                        model.transaction
+                    )
+                }
+            }
+            .show()
     }
 
 }

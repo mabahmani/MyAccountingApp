@@ -1,7 +1,7 @@
 package ir.mab.myaccounting.ui.transaction
 
 import android.os.Bundle
-import android.os.Handler
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.View.GONE
@@ -11,6 +11,8 @@ import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
 import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.LinearLayoutManager
+import com.google.android.material.dialog.MaterialAlertDialogBuilder
+import ir.mab.myaccounting.R
 import ir.mab.myaccounting.databinding.FragmentDebtBinding
 import ir.mab.myaccounting.entity.TransactionWithCategories
 import ir.mab.myaccounting.listener.TransactionItemClickListener
@@ -18,9 +20,7 @@ import ir.mab.myaccounting.ui.MainActivity
 import ir.mab.myaccounting.ui.bottomsheet.AddTransactionBottomSheet
 import ir.mab.myaccounting.vm.TransactionViewModel
 import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.launch
-import kotlinx.coroutines.withContext
 import java.text.NumberFormat
 
 class DebtFragment : Fragment(), TransactionItemClickListener {
@@ -57,7 +57,7 @@ class DebtFragment : Fragment(), TransactionItemClickListener {
 
     private fun checkFilter() {
         MainActivity.filter.observe(viewLifecycleOwner, {
-            if (it){
+            if (it) {
                 if (MainActivity.dateFilter && !MainActivity.categoryFilter) {
                     filterByDate()
                 } else if (!MainActivity.dateFilter && MainActivity.categoryFilter) {
@@ -67,9 +67,7 @@ class DebtFragment : Fragment(), TransactionItemClickListener {
                 } else {
                     getDebts()
                 }
-            }
-
-            else{
+            } else {
                 getDebts()
             }
         })
@@ -78,7 +76,39 @@ class DebtFragment : Fragment(), TransactionItemClickListener {
     private fun filterByDateAndCategory() {
         transactionViewModel.getDebtsByDateRange(MainActivity.startDate, MainActivity.endDate)
             .observe(viewLifecycleOwner, {
-                viewLifecycleOwner.lifecycleScope.launch(Dispatchers.Default){
+                if (MainActivity.dateFilter && MainActivity.categoryFilter) {
+                    viewLifecycleOwner.lifecycleScope.launch(Dispatchers.Default) {
+                        val filteredTransaction: ArrayList<TransactionWithCategories> =
+                            arrayListOf()
+                        for (sc in MainActivity.filterCategoryList) {
+                            for (tc in it) {
+                                for (cat in tc.categories) {
+                                    if (cat.category.contentEquals(sc.toString())) {
+                                        if (!filteredTransaction.contains(tc)) {
+                                            filteredTransaction.add(tc)
+                                            break
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                        requireActivity().runOnUiThread {
+                            checkEmpty(filteredTransaction)
+                            transactionAdapter.updateTransactions(filteredTransaction)
+//                            transactionAdapter.list = filteredTransaction
+//                            transactionAdapter.notifyDataSetChanged()
+                        }
+                    }
+                }
+
+            })
+    }
+
+    private fun filterByCategory() {
+
+        transactionViewModel.getDebts().observe(viewLifecycleOwner, {
+            if (MainActivity.categoryFilter) {
+                viewLifecycleOwner.lifecycleScope.launch(Dispatchers.Default) {
                     val filteredTransaction: ArrayList<TransactionWithCategories> = arrayListOf()
                     for (sc in MainActivity.filterCategoryList) {
                         for (tc in it) {
@@ -94,45 +124,25 @@ class DebtFragment : Fragment(), TransactionItemClickListener {
                     }
                     requireActivity().runOnUiThread {
                         checkEmpty(filteredTransaction)
-                        transactionAdapter.list = filteredTransaction
-                        transactionAdapter.notifyDataSetChanged()
+                        transactionAdapter.updateTransactions(filteredTransaction)
+//                        transactionAdapter.list = filteredTransaction
+//                        transactionAdapter.notifyDataSetChanged()
                     }
-                }
-            })
-    }
-
-    private fun filterByCategory() {
-
-        transactionViewModel.getDebts().observe(viewLifecycleOwner, {
-            viewLifecycleOwner.lifecycleScope.launch(Dispatchers.Default){
-                val filteredTransaction: ArrayList<TransactionWithCategories> = arrayListOf()
-                for (sc in MainActivity.filterCategoryList) {
-                    for (tc in it) {
-                        for (cat in tc.categories) {
-                            if (cat.category.contentEquals(sc.toString())) {
-                                if (!filteredTransaction.contains(tc)) {
-                                    filteredTransaction.add(tc)
-                                    break
-                                }
-                            }
-                        }
-                    }
-                }
-                requireActivity().runOnUiThread {
-                    checkEmpty(filteredTransaction)
-                    transactionAdapter.list = filteredTransaction
-                    transactionAdapter.notifyDataSetChanged()
                 }
             }
+
         })
     }
 
     private fun filterByDate() {
         transactionViewModel.getDebtsByDateRange(MainActivity.startDate, MainActivity.endDate)
             .observe(viewLifecycleOwner, {
-                checkEmpty(it)
-                transactionAdapter.list = it
-                transactionAdapter.notifyDataSetChanged()
+                if (MainActivity.dateFilter) {
+                    checkEmpty(it)
+                    transactionAdapter.updateTransactions(it.toMutableList())
+//                    transactionAdapter.list = it
+//                    transactionAdapter.notifyDataSetChanged()
+                }
             })
     }
 
@@ -149,8 +159,9 @@ class DebtFragment : Fragment(), TransactionItemClickListener {
     private fun getDebts() {
         transactionViewModel.getDebts().observe(viewLifecycleOwner, {
             checkEmpty(it)
-            transactionAdapter.list = it
-            transactionAdapter.notifyDataSetChanged()
+            transactionAdapter.updateTransactions(it.toMutableList())
+//            transactionAdapter.list = it
+//            transactionAdapter.notifyDataSetChanged()
             binding.swipeRefresh.isRefreshing = false
         })
     }
@@ -184,6 +195,17 @@ class DebtFragment : Fragment(), TransactionItemClickListener {
     }
 
     override fun onLongClick(model: TransactionWithCategories) {
-        transactionViewModel.deleteTransaction(model.transaction)
+        MaterialAlertDialogBuilder(requireContext())
+            .setTitle(getString(R.string.confirm_delete_msg))
+            .setNeutralButton(getString(R.string.cancel)) { _, _ -> }
+            .setPositiveButton(getString(R.string.ok)) { _, _ ->
+                run {
+                    transactionViewModel.deleteTransaction(
+                        model.transaction
+                    )
+                }
+            }
+            .show()
+
     }
 }

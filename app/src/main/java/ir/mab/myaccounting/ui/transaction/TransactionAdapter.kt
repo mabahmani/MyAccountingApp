@@ -1,22 +1,35 @@
 package ir.mab.myaccounting.ui.transaction
 
+import android.util.Log
+import android.view.HapticFeedbackConstants
 import android.view.LayoutInflater
 import android.view.View.GONE
 import android.view.View.VISIBLE
 import android.view.ViewGroup
 import androidx.core.content.ContextCompat
+import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.RecyclerView
 import ir.mab.myaccounting.R
 import ir.mab.myaccounting.databinding.ItemTransactionBinding
+import ir.mab.myaccounting.entity.Transaction
 import ir.mab.myaccounting.entity.TransactionWithCategories
 import ir.mab.myaccounting.listener.TransactionItemClickListener
 import ir.mab.myaccounting.util.DateFormatter
 import java.text.NumberFormat
 
 class TransactionAdapter(
-    var list: List<TransactionWithCategories>,
+    var list: MutableList<TransactionWithCategories>,
     private val transactionItemClickListener: TransactionItemClickListener
 ) : RecyclerView.Adapter<TransactionAdapter.ViewHolder>() {
+
+    fun updateTransactions(newTransactionsList: MutableList<TransactionWithCategories>){
+        val diffCallBack = TransactionDiffCallBack(newTransactionsList,list)
+        val diffResult = DiffUtil.calculateDiff(diffCallBack)
+        list.clear()
+        list.addAll(newTransactionsList)
+        diffResult.dispatchUpdatesTo(this)
+
+    }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
         return ViewHolder(
@@ -28,14 +41,16 @@ class TransactionAdapter(
         )
     }
 
-    override fun onBindViewHolder(holder: ViewHolder, position: Int) {
+    override fun onBindViewHolder(holder: ViewHolder, position: Int,  payloads:List<Any>) {
         holder.bind(list[position])
 
         holder.binding.action.setOnClickListener {
-            if (list[position].transaction.isPayed)
+            if (list[position].transaction.isPayed){
                 transactionItemClickListener.onRestore(list[position])
-            else
+            }
+            else{
                 transactionItemClickListener.onPass(list[position])
+            }
         }
 
         holder.binding.card.setOnClickListener {
@@ -43,6 +58,7 @@ class TransactionAdapter(
         }
 
         holder.binding.card.setOnLongClickListener {
+            it.performHapticFeedback(HapticFeedbackConstants.LONG_PRESS)
             transactionItemClickListener.onLongClick(list[position])
             true
         }
@@ -85,6 +101,12 @@ class TransactionAdapter(
                     )
                 )
                 binding.categoryList.setTextColor(
+                    ContextCompat.getColor(
+                        binding.root.context,
+                        R.color.blue_grey_50
+                    )
+                )
+                binding.divider.setColorFilter(
                     ContextCompat.getColor(
                         binding.root.context,
                         R.color.blue_grey_50
@@ -152,6 +174,12 @@ class TransactionAdapter(
                         R.color.blue_grey_900
                     )
                 )
+                binding.divider.setColorFilter(
+                    ContextCompat.getColor(
+                        binding.root.context,
+                        R.color.blue_grey_200
+                    )
+                )
                 binding.action.setTextColor(
                     ContextCompat.getColor(
                         binding.root.context,
@@ -203,6 +231,10 @@ class TransactionAdapter(
                 binding.categoryList.text = categoriesString
             }
         }
+    }
+
+    override fun onBindViewHolder(holder: ViewHolder, position: Int) {
+
     }
 
 }

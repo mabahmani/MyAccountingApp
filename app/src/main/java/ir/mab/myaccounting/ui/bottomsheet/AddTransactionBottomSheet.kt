@@ -63,7 +63,7 @@ class AddTransactionBottomSheet(private var transactionWithCategories: Transacti
         binding.description.setText(transactionWithCategories?.transaction?.description)
         binding.cost.setText(transactionWithCategories?.transaction?.cost!!.toString())
         binding.date.setText(DateFormatter.formatDateDayNameYearMonthDay(transactionWithCategories?.transaction?.createdAt!!))
-
+        transactionDate = transactionWithCategories?.transaction?.createdAt!!
         if (transactionWithCategories?.transaction?.isDebt!!)
             binding.radioGroup.check(R.id.debt)
         else

@@ -1,14 +1,11 @@
 package ir.mab.myaccounting.vm
 
 import androidx.lifecycle.LiveData
-import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import ir.mab.myaccounting.MainApplication.Companion.db
 import ir.mab.myaccounting.entity.Category
-import ir.mab.myaccounting.model.Result
 import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.launch
 
 class CategoryViewModel : ViewModel() {
