@@ -52,6 +52,7 @@ class DebtFragment : Fragment(), TransactionItemClickListener {
             MainActivity.categoryFilter = false
             MainActivity.dateFilter = false
             getDebts()
+            getDebtsSum()
         }
     }
 

@@ -48,6 +48,7 @@ class CreditFragment : Fragment(), TransactionItemClickListener {
             MainActivity.categoryFilter = false
             MainActivity.dateFilter = false
             getCredits()
+            getCreditsSum()
         }
     }
 

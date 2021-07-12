@@ -1,5 +1,6 @@
 package ir.mab.myaccounting.ui
 
+import android.content.Context
 import android.content.DialogInterface
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
@@ -13,6 +14,7 @@ import androidx.lifecycle.MutableLiveData
 import com.google.android.material.datepicker.MaterialDatePicker
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import com.google.android.material.tabs.TabLayoutMediator
+import io.github.inflationx.viewpump.ViewPumpContextWrapper
 import ir.mab.myaccounting.R
 import ir.mab.myaccounting.databinding.ActivityMainBinding
 import ir.mab.myaccounting.ui.bottomsheet.AddTransactionBottomSheet
@@ -116,5 +118,9 @@ class MainActivity : AppCompatActivity() {
                 show(supportFragmentManager, null)
             }
         }
+    }
+
+    override fun attachBaseContext(newBase: Context?) {
+        super.attachBaseContext(ViewPumpContextWrapper.wrap(newBase!!))
     }
 }
