@@ -1,7 +1,6 @@
 package ir.mab.myaccounting.ui.transaction
 
 import android.os.Bundle
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.View.GONE
@@ -95,6 +94,7 @@ class DebtFragment : Fragment(), TransactionItemClickListener {
                         }
                         requireActivity().runOnUiThread {
                             checkEmpty(filteredTransaction)
+                            calculateFilterSum(filteredTransaction)
                             transactionAdapter.updateTransactions(filteredTransaction)
 //                            transactionAdapter.list = filteredTransaction
 //                            transactionAdapter.notifyDataSetChanged()
@@ -125,6 +125,7 @@ class DebtFragment : Fragment(), TransactionItemClickListener {
                     }
                     requireActivity().runOnUiThread {
                         checkEmpty(filteredTransaction)
+                        calculateFilterSum(filteredTransaction)
                         transactionAdapter.updateTransactions(filteredTransaction)
 //                        transactionAdapter.list = filteredTransaction
 //                        transactionAdapter.notifyDataSetChanged()
@@ -140,6 +141,7 @@ class DebtFragment : Fragment(), TransactionItemClickListener {
             .observe(viewLifecycleOwner, {
                 if (MainActivity.dateFilter) {
                     checkEmpty(it)
+                    calculateFilterSum(it)
                     transactionAdapter.updateTransactions(it.toMutableList())
 //                    transactionAdapter.list = it
 //                    transactionAdapter.notifyDataSetChanged()
@@ -165,6 +167,17 @@ class DebtFragment : Fragment(), TransactionItemClickListener {
 //            transactionAdapter.notifyDataSetChanged()
             binding.swipeRefresh.isRefreshing = false
         })
+    }
+
+    private fun calculateFilterSum(list: List<TransactionWithCategories>?) {
+        var sum = 0
+        if (list != null) {
+            for (item in list){
+                sum += item.transaction.cost
+            }
+
+            binding.total.text = sum.toString()
+        }
     }
 
     private fun checkEmpty(it: List<Any>) {
