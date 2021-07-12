@@ -200,12 +200,12 @@ class DebtFragment : Fragment(), TransactionItemClickListener {
 
     override fun onPass(model: TransactionWithCategories) {
         model.transaction.isPayed = true
-        transactionViewModel.updateTransaction(model.transaction)
+        transactionViewModel.updateTransactionWithoutCategories(model.transaction)
     }
 
     override fun onRestore(model: TransactionWithCategories) {
         model.transaction.isPayed = false
-        transactionViewModel.updateTransaction(model.transaction)
+        transactionViewModel.updateTransactionWithoutCategories(model.transaction)
     }
 
     override fun onLongClick(model: TransactionWithCategories) {

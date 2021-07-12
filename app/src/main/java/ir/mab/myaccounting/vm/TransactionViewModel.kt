@@ -47,6 +47,12 @@ class TransactionViewModel: ViewModel() {
         }
     }
 
+    fun updateTransactionWithoutCategories(transaction: Transaction) {
+        viewModelScope.launch(Dispatchers.IO) {
+            MainApplication.db.transactionDao().updateAll(transaction)
+        }
+    }
+
     fun deleteTransaction(transaction: Transaction) {
         viewModelScope.launch(Dispatchers.IO) {
             MainApplication.db.transactionCategoryDao().deleteTransactionCategoriesWithTId(transaction.transactionId)
