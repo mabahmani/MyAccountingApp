@@ -173,10 +173,11 @@ class DebtFragment : Fragment(), TransactionItemClickListener {
         var sum = 0
         if (list != null) {
             for (item in list){
-                sum += item.transaction.cost
+                if (!item.transaction.isPayed)
+                    sum += item.transaction.cost
             }
 
-            binding.total.text = sum.toString()
+            binding.total.text = String.format("%s T", NumberFormat.getNumberInstance().format(sum))
         }
     }
 
